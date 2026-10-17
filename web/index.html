@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 只允许从本站加载；不允许向任何其他地址发请求（发票不会离开你的电脑） -->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval'; connect-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>发票报销包 · 本地整理电子发票</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>发票报销包</h1>
+  <p class="privacy">🔒 所有处理都在你的电脑上完成，发票<strong>不会上传</strong>到任何地方。打开页面后断网也能用。</p>
+</header>
+
+<main>
+  <section class="step">
+    <h2>① 你的单位（选填，用来检查发票抬头）</h2>
+    <div class="row">
+      <label>单位名称 <input id="buyerName" placeholder="例如：示例大学"></label>
+      <label>税号 <input id="buyerTaxId" placeholder="18 位统一社会信用代码"></label>
+    </div>
+    <p class="hint">只保存在这台电脑的浏览器里，下次打开会自动填好。</p>
+  </section>
+
+  <section class="step">
+    <h2>② 把发票拖进来</h2>
+    <div id="drop" tabindex="0">
+      <p id="dropText">正在准备，请稍等…（第一次打开要加载约 14MB）</p>
+      <p class="hint">支持 PDF、OFD、XML，可以一次拖很多个，也可以拖整个文件夹。同一张发票的几种格式会自动合成一条。</p>
+      <input id="fileInput" type="file" multiple accept=".pdf,.ofd,.xml">
+      <button id="pick" type="button" disabled>或者点这里选择文件</button>
+    </div>
+  </section>
+
+  <section class="step" id="resultStep" hidden>
+    <h2>③ 看结果、下载</h2>
+    <p id="summary"></p>
+    <div class="buttons">
+      <button id="dlXlsx" type="button">下载汇总表（Excel）</button>
+      <button id="dlZip" type="button">下载改好名的发票（zip）</button>
+      <button id="reset" type="button" class="secondary">清空，重新开始</button>
+    </div>
+    <table id="table">
+      <thead><tr><th>状态</th><th>开票日期</th><th>发票号码</th><th>销售方</th><th>金额（元）</th><th>文件</th><th>说明</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+<footer>
+  <p>fapiao-kit · Apache-2.0 · 本工具不替代税务查验，报销前请以财务要求为准。</p>
+</footer>
+<script src="vendor/pyodide/pyodide.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

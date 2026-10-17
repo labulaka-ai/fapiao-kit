@@ -1,0 +1,16 @@
+name: test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      # 网页版依赖（Pyodide + pypdf wheel），按固定版本与 SHA-256 下载到 web/vendor/
+      - run: python scripts/fetch_web_deps.py
+      - run: python -m playwright install --with-deps chromium
+      # LibreOffice 用于“导出的 xlsx 能被办公软件打开”的可选测试
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libreoffice-calc
+      - run: pytest -v -rs tests

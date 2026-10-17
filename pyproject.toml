@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fapiao-kit"
+version = "0.1.0"
+description = "在本机把 PDF/OFD/XML 电子发票整理成报销包：合并、去重、改名、Excel 汇总、抬头检查 | Local Chinese e-invoice (fapiao) toolkit for humans and AI agents"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [{name = "Labulaka (labulaka-ai)"}]
+requires-python = ">=3.11"
+dependencies = ["pypdf>=4.0"]
+
+[project.optional-dependencies]
+dev = ["pytest", "reportlab", "openpyxl", "playwright"]
+
+[project.scripts]
+fapiao = "fapiao_kit.cli:main"
+
+[tool.setuptools]
+packages = ["fapiao_kit"]

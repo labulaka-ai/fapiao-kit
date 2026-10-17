@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 测试样例 非真实发票：fapiao-kit 测试用合成数据，不具备任何效力 -->
+<EInvoice>
+  <Header><EIid>99260000000000000002</EIid><Version>test</Version>
+    <InherentLabel><EInvoiceType><LabelCode>00</LabelCode><LabelName>普通发票</LabelName></EInvoiceType></InherentLabel>
+  </Header>
+  <EInvoiceData>
+    <SellerInformation><SellerIdNum>99TEST0000000000B2</SellerIdNum><SellerName>示例办公用品有限公司</SellerName></SellerInformation>
+    <BuyerInformation><BuyerIdNum>99TEST000000000001</BuyerIdNum><BuyerName>示例大学</BuyerName></BuyerInformation>
+    <BasicInformation><TotalAmWithoutTax>155.40</TotalAmWithoutTax><TotalTaxAm>20.20</TotalTaxAm>
+      <TotalTax-includedAmount>175.60</TotalTax-includedAmount>
+      <TotalTax-includedAmountInChinese>壹佰柒拾伍圆陆角</TotalTax-includedAmountInChinese>
+      <Drawer>测试</Drawer><RequestTime>2026-03-08 10:00:00</RequestTime></BasicInformation>
+    <IssuItemInformation><ItemName>*纸制品*打印纸</ItemName><SpecMod/><MeaUnits>项</MeaUnits><Quantity>1</Quantity><UnPrice>120.00</UnPrice><Amount>120.00</Amount><TaxRate>13%</TaxRate><ComTaxAm>15.60</ComTaxAm></IssuItemInformation><IssuItemInformation><ItemName>*文具*中性笔</ItemName><SpecMod/><MeaUnits>项</MeaUnits><Quantity>1</Quantity><UnPrice>35.40</UnPrice><Amount>35.40</Amount><TaxRate>13%</TaxRate><ComTaxAm>4.60</ComTaxAm></IssuItemInformation>
+    <AdditionalInformation><Remark>测试样例 非真实发票</Remark></AdditionalInformation>
+  </EInvoiceData>
+  <TaxSupervisionInfo><InvoiceNumber>99260000000000000002</InvoiceNumber><IssueTime>2026-03-08</IssueTime>
+    <TaxBureauName>测试样例 非真实发票</TaxBureauName></TaxSupervisionInfo>
+</EInvoice>

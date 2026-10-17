@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 测试样例 非真实发票：fapiao-kit 测试用合成数据，不具备任何效力 -->
+<EInvoice>
+  <Header><EIid>99260000000000000001</EIid><Version>test</Version>
+    <InherentLabel><EInvoiceType><LabelCode>00</LabelCode><LabelName>增值税专用发票</LabelName></EInvoiceType></InherentLabel>
+  </Header>
+  <EInvoiceData>
+    <SellerInformation><SellerIdNum>99TEST0000000000A1</SellerIdNum><SellerName>虚构餐饮管理有限公司</SellerName></SellerInformation>
+    <BuyerInformation><BuyerIdNum>99TEST000000000001</BuyerIdNum><BuyerName>示例大学</BuyerName></BuyerInformation>
+    <BasicInformation><TotalAmWithoutTax>283.02</TotalAmWithoutTax><TotalTaxAm>16.98</TotalTaxAm>
+      <TotalTax-includedAmount>300.00</TotalTax-includedAmount>
+      <TotalTax-includedAmountInChinese>叁佰圆整</TotalTax-includedAmountInChinese>
+      <Drawer>测试</Drawer><RequestTime>2026-03-05 10:00:00</RequestTime></BasicInformation>
+    <IssuItemInformation><ItemName>*餐饮服务*餐费</ItemName><SpecMod/><MeaUnits>项</MeaUnits><Quantity>1</Quantity><UnPrice>283.02</UnPrice><Amount>283.02</Amount><TaxRate>6%</TaxRate><ComTaxAm>16.98</ComTaxAm></IssuItemInformation>
+    <AdditionalInformation><Remark>测试样例 非真实发票</Remark></AdditionalInformation>
+  </EInvoiceData>
+  <TaxSupervisionInfo><InvoiceNumber>99260000000000000001</InvoiceNumber><IssueTime>2026-03-05</IssueTime>
+    <TaxBureauName>测试样例 非真实发票</TaxBureauName></TaxSupervisionInfo>
+</EInvoice>
