@@ -1,0 +1,39 @@
+name: pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      # 下载 Pyodide 与 pypdf（固定版本 + SHA-256 校验）到 web/vendor/
+      - run: python scripts/fetch_web_deps.py
+      # 站点结构：/ 跳转到 /web/；/web/ 为网页；/fapiao_kit/ 为网页在浏览器里运行的同一份 Python 核心
+      - run: |
+          mkdir -p _site/fapiao_kit
+          cp -r web _site/web
+          cp fapiao_kit/*.py _site/fapiao_kit/
+          cp site/index.html _site/index.html
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with: {path: _site}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
