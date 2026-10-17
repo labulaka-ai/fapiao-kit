@@ -10,6 +10,8 @@
 
 Turn a pile of Chinese electronic invoices (数电票 / 发票) in PDF, OFD and XML into a reimbursement pack, **on your own computer**: the different formats of the same invoice are merged into one record, duplicates are counted once, copies are renamed to `date_seller_total_number`, and you get an Excel summary with totals and the amount in Chinese uppercase (大写). It also checks that the buyer name and tax ID match your organisation.
 
+**Use it online (nothing to install): <https://labulaka-ai.github.io/fapiao-kit/>**. Open the link and drag your invoices in; files are processed in your browser and never uploaded.
+
 There are two ways to use it. **Non-technical users** open a web page, drag the invoices in, and download the Excel file and a zip of renamed copies. **Developers and AI agents** use the CLI, the JSON output and the Python API. Both run **the same Python code** (the page runs it in the browser with Pyodide), so the tests below cover both.
 
 ![Web page screenshot (synthetic samples)](docs/web-demo.png)
@@ -42,13 +44,15 @@ Every command supports `--json`.
 
 ## Web page: for people who don't use a terminal
 
+**Open it directly: <https://labulaka-ai.github.io/fapiao-kit/>** (hosted on GitHub Pages, deployed by `.github/workflows/pages.yml`).
+
 `web/index.html` is a static page with three steps: ① enter your organisation's name and tax ID once (stored only in this browser) → ② drag invoice files or a whole folder in → ③ download the Excel summary and the zip of renamed invoices (the zip also contains the summary). Problem invoices are highlighted in red with a one-line plain-language explanation.
 
 - **No upload**: a Content-Security-Policy forbids requests to anywhere except the page's own origin, and invoices are processed in browser memory only. The tests prove this (see below).
 - **Works offline**: once the page has loaded you can disconnect and keep working.
 - The first visit loads about 14 MB of in-browser Python runtime (Pyodide); the browser caches it afterwards.
 
-Run it locally (developers / early testers):
+Run it locally (developers):
 
 ```bash
 python scripts/fetch_web_deps.py      # downloads Pyodide and pypdf into web/vendor/ (pinned version + SHA-256)
@@ -56,7 +60,7 @@ python -m http.server 8000            # run from the repository root
 # open http://localhost:8000/web/index.html
 ```
 
-> The page must be served over http (double-clicking the html file makes the browser refuse to load the runtime). The plan is to publish it on GitHub Pages so ordinary users can just click a link.
+> Locally the page must be served over http (double-clicking the html file makes the browser refuse to load the runtime). Ordinary users should just use the online link above.
 
 ## CLI & Python API
 
@@ -112,6 +116,8 @@ print(fk.to_json(records))
 
 CI (GitHub Actions, `.github/workflows/test.yml`) downloads the web dependencies, installs Chromium and LibreOffice, and runs everything. Without `web/vendor/` or Chromium, the 5 browser tests are skipped and the rest still run.
 
+**Live page check**: the same Playwright drag-and-drop flow was run against the live GitHub Pages site: the 18 sample files were processed, the downloaded Excel totals were correct, there were no network requests from drop to the end of the downloads, and the browser result matched local Python field by field.
+
 **Not yet verified** (stated honestly): no spot checks against real invoices yet. The XML element names, OFD structure and PDF layout of the samples were written from public information and may differ from what real issuing software produces in different regions. Real-invoice spot checks will only be done locally, never committed or uploaded; if a layout is not recognised, please open an issue with **redacted** diagnostics.
 
 ## Known limitations
@@ -122,7 +128,7 @@ CI (GitHub Actions, `.github/workflows/test.yml`) downloads the web dependencies
 - **No authenticity verification**: that needs the network and a CAPTCHA, and this tool stays offline; use the State Taxation Administration's official verification site;
 - **No cross-batch ledger**: duplicates are caught within one batch, but invoices reimbursed last month are not remembered (planned);
 - **No merged print PDF or reimbursement-form filling** (planned); the web page cannot take a zip archive directly yet;
-- The web page must be served over http and loads ~14 MB the first time; automated tests run on Chromium only (Firefox, Safari and phones untested).
+- The web page loads ~14 MB the first time; automated tests run on Chromium only (Firefox, Safari and phones untested).
 
 ## Repository layout
 
@@ -134,6 +140,7 @@ fapiao-kit/
 ├── requirements.txt         # runtime: pypdf
 ├── requirements-dev.txt     # tests: pytest, reportlab, openpyxl, playwright
 ├── fapiao_kit/              # cli, api, parsers, layout, merge, rules, rename, export/xlsx, money
+├── site/index.html          # Pages root redirects to web/
 ├── web/                     # index.html + app.js + style.css (vendor/ not committed)
 ├── scripts/fetch_web_deps.py
 ├── rules/example.toml       # example rule file (fictional data)

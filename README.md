@@ -10,6 +10,8 @@
 
 把一堆 PDF / OFD / XML 电子发票，**在你自己的电脑上**整理成报销材料：同一张票的几种格式合成一条、重复的只算一次、按“日期_销售方_金额_号码”改好名、出一张带合计和大写金额的 Excel 汇总表，顺便检查发票抬头和税号是不是本单位的。
 
+**在线使用（不用装任何东西）：<https://labulaka-ai.github.io/fapiao-kit/>**——打开链接，把发票拖进去就行；文件只在你的浏览器里处理，不会上传。
+
 它有两种用法：**不懂电脑的人**打开一个网页，把发票拖进去，下载 Excel 和改好名的 zip；**开发者和 AI agent** 用命令行、JSON 输出和 Python API。两种用法跑的是**同一份 Python 代码**（网页里用 Pyodide 运行），所以下面的测试同时覆盖两者。
 
 ![网页版截图（合成样例）](docs/web-demo.png)
@@ -42,13 +44,15 @@
 
 ## 网页版：给不用命令行的人
 
+**直接打开：<https://labulaka-ai.github.io/fapiao-kit/>**（由 GitHub Pages 托管，部署流程见 `.github/workflows/pages.yml`）。
+
 `web/index.html` 是一个静态网页，三步：① 填一次本单位抬头和税号（只存在本机浏览器里）→ ② 把发票文件或整个文件夹拖进去 → ③ 下载“汇总表 Excel”和“改好名的发票 zip”（zip 里也附了汇总表）。有问题的票标红，并用一句大白话说明原因。
 
 - **不上传**：页面用 Content-Security-Policy 禁止向本站以外的任何地址发请求；发票只在浏览器内存里处理。测试里会证明这一点（见下文）。
 - **断网可用**：页面加载完以后可以断网，照样能处理。
 - 首次打开要加载约 14MB 的浏览器内 Python 运行时（Pyodide），之后浏览器会缓存。
 
-本地运行（开发者 / 尝鲜）：
+自己在本地运行（开发者）：
 
 ```bash
 python scripts/fetch_web_deps.py      # 下载 Pyodide 与 pypdf 到 web/vendor/（固定版本 + SHA-256 校验）
@@ -56,7 +60,7 @@ python -m http.server 8000            # 在仓库根目录运行
 # 浏览器打开 http://localhost:8000/web/index.html
 ```
 
-> 网页需要通过 http 打开（直接双击 html 文件，浏览器会禁止加载运行时）。之后计划发布到 GitHub Pages，普通用户点链接即可使用。
+> 本地运行需要通过 http 打开（直接双击 html 文件，浏览器会禁止加载运行时）。普通用户直接用上面的在线链接即可。
 
 ## 命令行与 Python API
 
@@ -124,6 +128,8 @@ print(fk.to_json(records))
 
 CI（GitHub Actions，`.github/workflows/test.yml`）下载网页依赖、安装 Chromium 和 LibreOffice 后运行全部测试。没有 `web/vendor/` 或 Chromium 时，5 个浏览器用例自动跳过，其余照常运行。
 
+**线上页面实测**：对 GitHub Pages 上的线上页面跑同一套 Playwright 拖拽流程：18 个样例文件处理正常，下载的 Excel 合计正确；从拖入到下载结束，没有任何网络请求；浏览器结果与本机 Python 逐字段一致。
+
 **还没有做的验证**（如实说明）：没有用真实发票做过抽检；样本的 XML 元素名、OFD 结构和 PDF 版式是按公开信息自行编写的，和各地、各开票软件实际输出的文件可能有差异。真实发票的抽检只会在本机进行，不入库、不上传；遇到识别不了的版式，欢迎提交**脱敏后**的诊断信息。
 
 ## 已知限制
@@ -134,7 +140,7 @@ CI（GitHub Actions，`.github/workflows/test.yml`）下载网页依赖、安装
 - **不做真伪查验**：查验要联网并输验证码，本工具坚持离线，请到国家税务总局全国增值税发票查验平台自行查验；
 - **没有跨批次台账**：这次拖进去的文件之间能查重，但不会记住上个月已经报过的票（计划中）；
 - **没有合并打印 PDF、报销单模板填写**（计划中）；网页版暂不支持直接拖入 zip 压缩包；
-- 网页版需要通过 http 打开，首次加载约 14MB；只在 Chromium 上做了自动化测试，Firefox、Safari 和手机未测。
+- 网页版首次加载约 14MB；只在 Chromium 上做了自动化测试，Firefox、Safari 和手机未测。
 
 ## 文件结构
 
@@ -155,6 +161,7 @@ fapiao-kit/
 │   ├── rename.py            # 改名复制（目录或 zip）
 │   ├── export.py / xlsx.py  # Excel 汇总表（自带极简 xlsx 写入器，仅标准库）
 │   └── money.py             # 金额与中文大写
+├── site/index.html          # Pages 根路径跳转到 web/
 ├── web/                     # 网页版：index.html + app.js + style.css（vendor/ 不入库）
 ├── scripts/fetch_web_deps.py
 ├── rules/example.toml       # 规则文件示例（虚构数据）
